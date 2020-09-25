@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"time"
 
 	"./youtube"
 )
@@ -17,10 +18,11 @@ func main() {
 		log.Fatal(err)
 	}
 
+	publishedAfter := time.Now().AddDate(0, 0, -7).UTC().Format(time.RFC3339)
+
 	youtubeApi := youtube.NewYoutube()
-	youtubeApi.ProductKey = productKey
-	youtubeApi.MaxResults = 50
-	article, err := youtubeApi.Connect().GetArticle()
+	article, err := youtubeApi.SetProductKey(productKey).SetMaxResults(50).
+		SetPublishedAfter(publishedAfter).Connect().GetArticle()
 	if err != nil {
 		log.Fatal(err)
 	}

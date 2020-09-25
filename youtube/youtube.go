@@ -10,38 +10,41 @@ import (
 )
 
 const (
-	BASE_URL    = "https://www.googleapis.com/youtube/v3/search"
-	PRODUCT_KEY = ""
-	PART        = "id,snippet"
-	MAX_RESULTS = 10
-	ORDER       = "viewCount"
-	Q           = "official+video"
-	REGION_CODE = "us"
-	TYPE        = "video"
+	BASE_URL        = "https://www.googleapis.com/youtube/v3/search"
+	PRODUCT_KEY     = ""
+	PART            = "id,snippet"
+	MAX_RESULTS     = 10
+	ORDER           = "viewCount"
+	Q               = "official+video"
+	REGION_CODE     = "us"
+	TYPE            = "video"
+	PULBISHED_AFTER = ""
 )
 
 type YoutubeApi struct {
-	BaseUrl    string
-	ProductKey string
-	Part       string
-	MaxResults int
-	Order      string
-	Q          string
-	RegionCode string
-	Type       string
-	ApiUrl     string
+	BaseUrl        string
+	ProductKey     string
+	Part           string
+	MaxResults     int
+	Order          string
+	Q              string
+	RegionCode     string
+	Type           string
+	PublishedAfter string
+	ApiUrl         string
 }
 
 func NewYoutube() *YoutubeApi {
 	return &YoutubeApi{
-		BaseUrl:    BASE_URL,
-		ProductKey: PRODUCT_KEY,
-		Part:       PART,
-		MaxResults: MAX_RESULTS,
-		Order:      ORDER,
-		Q:          Q,
-		RegionCode: REGION_CODE,
-		Type:       TYPE,
+		BaseUrl:        BASE_URL,
+		ProductKey:     PRODUCT_KEY,
+		Part:           PART,
+		MaxResults:     MAX_RESULTS,
+		Order:          ORDER,
+		Q:              Q,
+		RegionCode:     REGION_CODE,
+		Type:           TYPE,
+		PublishedAfter: PULBISHED_AFTER,
 	}
 }
 
@@ -117,6 +120,29 @@ func (y *YoutubeApi) Connect() *YoutubeApi {
 	maxResults := strconv.Itoa(y.MaxResults)
 	url := y.BaseUrl + "?part=" + y.Part + "&maxResults=" + maxResults +
 		"&order=" + y.Order + "&q=" + y.Q + "&regionCode=" + y.RegionCode + "&type=" + y.Type + "&key=" + y.ProductKey
+	if y.PublishedAfter != "" {
+		url = url + "&publishedAfter=" + y.PublishedAfter
+	}
 	y.ApiUrl = url
+	return y
+}
+
+func (y *YoutubeApi) SetProductKey(pkey string) *YoutubeApi {
+	y.ProductKey = pkey
+	return y
+}
+
+func (y *YoutubeApi) SetMaxResults(maxResults int) *YoutubeApi {
+	y.MaxResults = maxResults
+	return y
+}
+
+func (y *YoutubeApi) SetRegionCode(regionCode string) *YoutubeApi {
+	y.RegionCode = regionCode
+	return y
+}
+
+func (y *YoutubeApi) SetPublishedAfter(publishedAfter string) *YoutubeApi {
+	y.PublishedAfter = publishedAfter
 	return y
 }
