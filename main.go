@@ -2,7 +2,9 @@ package main
 
 import (
 	"bufio"
-	"fmt"
+	"bytes"
+	"html/template"
+	"io/ioutil"
 	"log"
 	"os"
 
@@ -21,7 +23,17 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Print(article)
+
+	buffer := new(bytes.Buffer)
+
+	t := template.Must(template.ParseFiles("template/template.html"))
+	if err := t.Execute(buffer, article); err != nil {
+		log.Fatal(err)
+	}
+
+	if err := ioutil.WriteFile("index.html", buffer.Bytes(), 0666); err != nil {
+		log.Fatal(err)
+	}
 }
 
 func getProductKey() (string, error) {
