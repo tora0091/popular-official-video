@@ -1,13 +1,65 @@
 <html>
     <head>
         <title>My music list.</title>
+        <style>
+        ol {
+            counter-reset:number;
+            list-style-type: none!important;
+            padding: 0.3em 0.8em;
+            border: solid 2px #ffb107;
+            box-shadow :0px 0px 5px silver;
+        }
+        ol li {
+            border-bottom: dashed 1px orange;
+            position: relative;
+            padding: 0.5em 0.5em 0.5em 30px;
+            line-height: 1.5em;
+        }
+        ol li:before{
+            position: absolute;
+            counter-increment: number;
+            content: counter(number);
+            display:inline-block;
+            background: #ffb107;
+            color: white;
+            font-family: 'Avenir','Arial Black','Arial',sans-serif;
+            font-weight:bold;
+            font-size: 15px;
+            border-radius: 50%;
+            left: 0;
+            width: 25px;
+            height: 25px;
+            line-height: 25px;
+            text-align: center;
+            top: 50%;
+            -webkit-transform: translateY(-50%);
+            transform: translateY(-50%);
+        }
+        ol li:last-of-type {
+            border-bottom: none;
+        }
+        .contents {
+            width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            font-size: 16px;
+            color: dimgray;
+        }
+        </style>
     </head>
 
     <body>
-        {{ range $k, $item := .Items }}
-        <div style="display: inline-block;">
-            <a href="https://www.youtube.com/watch?v={{ $item.ID.VideoID }}" title="{{ $item.Snippet.Title }}"><img src="{{ $item.Snippet.Thumbnails.Default.URL }}" alt="{{ $item.Snippet.Title }}"></a>
+        <div class="contents">
+            <ol>
+            {{ range $k, $item := .Items }}
+                <li>
+                    <div style="margin-left: 10px;">
+                        <a href="https://www.youtube.com/watch?v={{ $item.ID.VideoID }}" title="{{ $item.Snippet.Title }}"><img src="{{ $item.Snippet.Thumbnails.Default.URL }}" alt="{{ $item.Snippet.Title }}"></a>
+                        <br>{{ $item.Snippet.Title }}
+                    </div>
+                </li>
+            {{ end }}
+            </ol>
         </div>
-        {{ end }}
     </body>
 </html>
