@@ -19,6 +19,7 @@ func main() {
 
 	youtubeApi := youtube.NewYoutube()
 	youtubeApi.ProductKey = productKey
+	youtubeApi.MaxResults = 50
 	article, err := youtubeApi.Connect().GetArticle()
 	if err != nil {
 		log.Fatal(err)

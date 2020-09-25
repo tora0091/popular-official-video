@@ -1,0 +1,13 @@
+<html>
+    <head>
+        <title>My music list.</title>
+    </head>
+
+    <body>
+        {{ range $k, $item := .Items }}
+        <div style="display: inline-block;">
+            <a href="https://www.youtube.com/watch?v={{ $item.ID.VideoID }}" title="{{ $item.Snippet.Title }}"><img src="{{ $item.Snippet.Thumbnails.Default.URL }}" alt="{{ $item.Snippet.Title }}"></a>
+        </div>
+        {{ end }}
+    </body>
+</html>
