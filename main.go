@@ -12,13 +12,20 @@ import (
 	"./youtube"
 )
 
+type TemplateValues struct {
+	Article    *youtube.YoutubeArticle
+	ModifyDate string
+}
+
 func main() {
 	productKey, err := getProductKey()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	publishedAfter := time.Now().AddDate(0, 0, -7).UTC().Format(time.RFC3339)
+	today := time.Now()
+	publishedAfter := today.AddDate(0, 0, -7).UTC().Format(time.RFC3339)
+	modifyDate := today.Format("2006-01-02")
 
 	youtubeApi := youtube.NewYoutube()
 	article, err := youtubeApi.SetProductKey(productKey).SetMaxResults(50).
@@ -27,10 +34,14 @@ func main() {
 		log.Fatal(err)
 	}
 
+	templateValues := TemplateValues{}
+	templateValues.Article = article
+	templateValues.ModifyDate = modifyDate
+
 	buffer := new(bytes.Buffer)
 
 	t := template.Must(template.ParseFiles("template/template.html"))
-	if err := t.Execute(buffer, article); err != nil {
+	if err := t.Execute(buffer, templateValues); err != nil {
 		log.Fatal(err)
 	}
 

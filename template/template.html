@@ -1,6 +1,7 @@
 <html>
     <head>
         <title>My music list.</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1">
         <style>
         ol {
             counter-reset:number;
@@ -39,21 +40,31 @@
             border-bottom: none;
         }
         .contents {
-            width: 400px;
+            width: 90%;
             margin-left: auto;
             margin-right: auto;
             font-size: 16px;
             color: dimgray;
+        }
+        .date-area {
+            text-align: right;
+            margin-top: 10%;
+            font-size: 13px;
+        }
+        .music-area {
+            margin-left: 10px;
+            margin-right: 10px;
         }
         </style>
     </head>
 
     <body>
         <div class="contents">
+            <p class="date-area">{{ .ModifyDate }}</p>
             <ol>
-            {{ range $k, $item := .Items }}
+            {{ range $k, $item := .Article.Items }}
                 <li>
-                    <div style="margin-left: 10px;">
+                    <div class="music-area">
                         <a href="https://www.youtube.com/watch?v={{ $item.ID.VideoID }}" title="{{ $item.Snippet.Title }}"><img src="{{ $item.Snippet.Thumbnails.Default.URL }}" alt="{{ $item.Snippet.Title }}"></a>
                         <br>{{ $item.Snippet.Title }}
                     </div>
