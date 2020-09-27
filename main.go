@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"html/template"
+	"io"
 	"io/ioutil"
 	"log"
 	"os"
@@ -45,7 +46,12 @@ func main() {
 		log.Fatal(err)
 	}
 
-	if err := ioutil.WriteFile("index.html", buffer.Bytes(), 0666); err != nil {
+	filename := "index-" + templateValues.ModifyDate + ".html"
+	if err := ioutil.WriteFile(filename, buffer.Bytes(), 0666); err != nil {
+		log.Fatal(err)
+	}
+
+	if err = copyIndexHtml(filename); err != nil {
 		log.Fatal(err)
 	}
 }
@@ -60,4 +66,27 @@ func getProductKey() (string, error) {
 	scanner := bufio.NewScanner(fp)
 	scanner.Scan()
 	return scanner.Text(), nil
+}
+
+func copyIndexHtml(filename string) error {
+	src := filename
+	dst := "../../firebase/public/index.html"
+
+	fsrc, err := os.OpenFile(src, os.O_RDONLY, os.ModePerm)
+	if err != nil {
+		return err
+	}
+	defer fsrc.Close()
+
+	fdst, err := os.OpenFile(dst, os.O_CREATE|os.O_WRONLY, os.ModePerm)
+	if err != nil {
+		return err
+	}
+	defer fdst.Close()
+
+	_, err = io.Copy(fdst, fsrc)
+	if err != nil {
+		return err
+	}
+	return nil
 }
