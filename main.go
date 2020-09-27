@@ -7,9 +7,16 @@ import (
 	"os"
 	"time"
 
+	"./config"
 	"./template"
 	"./youtube"
 )
+
+func init() {
+	if err := config.InitConfig(); err != nil {
+		log.Fatal(err)
+	}
+}
 
 func main() {
 	productKey, err := getProductKey()
@@ -42,7 +49,7 @@ func main() {
 }
 
 func getProductKey() (string, error) {
-	fp, err := os.Open("./product_key.conf")
+	fp, err := os.Open(config.C.Files.Product_Conf)
 	if err != nil {
 		return "", err
 	}
@@ -55,7 +62,7 @@ func getProductKey() (string, error) {
 
 func copyIndexHtml(filename string) error {
 	src := filename
-	dst := "../../firebase/public/index.html"
+	dst := config.C.Files.Index_Html
 
 	fsrc, err := os.OpenFile(src, os.O_RDONLY, os.ModePerm)
 	if err != nil {

@@ -2,9 +2,11 @@ package template
 
 import (
 	"bytes"
+	"fmt"
 	"io/ioutil"
 	"text/template"
 
+	"../config"
 	"../youtube"
 )
 
@@ -20,12 +22,12 @@ func NewIndexTempalteValues() *IndexTemplateValues {
 func (templateValues *IndexTemplateValues) MakeIndexTemplate() (string, error) {
 	buffer := new(bytes.Buffer)
 
-	temp := template.Must(template.ParseFiles("template/template.html"))
+	temp := template.Must(template.ParseFiles(config.C.Files.Template_File))
 	if err := temp.Execute(buffer, templateValues); err != nil {
 		return "", err
 	}
 
-	filename := "index-" + templateValues.ModifyDate + ".html"
+	filename := fmt.Sprintf(config.C.Files.Output_File, templateValues.ModifyDate)
 	if err := ioutil.WriteFile(filename, buffer.Bytes(), 0666); err != nil {
 		return "", err
 	}

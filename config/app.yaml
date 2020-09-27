@@ -1,0 +1,5 @@
+files:
+    product_conf: ./config/product_key.conf
+    template_file: ./template/template.html
+    output_file: ./index-%s.html
+    index_html: ../../firebase/public/index.html
