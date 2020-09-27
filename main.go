@@ -2,21 +2,14 @@ package main
 
 import (
 	"bufio"
-	"bytes"
-	"html/template"
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
 	"time"
 
+	"./template"
 	"./youtube"
 )
-
-type TemplateValues struct {
-	Article    *youtube.YoutubeArticle
-	ModifyDate string
-}
 
 func main() {
 	productKey, err := getProductKey()
@@ -35,19 +28,11 @@ func main() {
 		log.Fatal(err)
 	}
 
-	templateValues := TemplateValues{}
+	templateValues := template.NewIndexTempalteValues()
 	templateValues.Article = article
 	templateValues.ModifyDate = modifyDate
-
-	buffer := new(bytes.Buffer)
-
-	t := template.Must(template.ParseFiles("template/template.html"))
-	if err := t.Execute(buffer, templateValues); err != nil {
-		log.Fatal(err)
-	}
-
-	filename := "index-" + templateValues.ModifyDate + ".html"
-	if err := ioutil.WriteFile(filename, buffer.Bytes(), 0666); err != nil {
+	filename, err := templateValues.MakeIndexTemplate()
+	if err != nil {
 		log.Fatal(err)
 	}
 
