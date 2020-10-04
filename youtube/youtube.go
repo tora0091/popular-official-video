@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"strconv"
 	"time"
 )
@@ -144,5 +145,10 @@ func (y *YoutubeApi) SetRegionCode(regionCode string) *YoutubeApi {
 
 func (y *YoutubeApi) SetPublishedAfter(publishedAfter string) *YoutubeApi {
 	y.PublishedAfter = publishedAfter
+	return y
+}
+
+func (y *YoutubeApi) SetSearchWord(searchWord string) *YoutubeApi {
+	y.Q = url.QueryEscape(searchWord)
 	return y
 }
