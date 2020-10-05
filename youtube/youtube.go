@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -118,13 +119,27 @@ func (y *YoutubeApi) GetArticle() (*YoutubeArticle, error) {
 }
 
 func (y *YoutubeApi) Connect() *YoutubeApi {
-	maxResults := strconv.Itoa(y.MaxResults)
-	url := y.BaseUrl + "?part=" + y.Part + "&maxResults=" + maxResults +
-		"&order=" + y.Order + "&q=" + y.Q + "&regionCode=" + y.RegionCode + "&type=" + y.Type + "&key=" + y.ProductKey
-	if y.PublishedAfter != "" {
-		url = url + "&publishedAfter=" + y.PublishedAfter
+	u, err := url.Parse(y.BaseUrl)
+	if err != nil {
+		log.Fatal(err)
 	}
-	y.ApiUrl = url
+
+	q := u.Query()
+	q.Set("part", y.Part)
+
+	maxResults := strconv.Itoa(y.MaxResults)
+	q.Set("maxResults", maxResults)
+	q.Set("order", y.Order)
+	q.Set("q", y.Q)
+	q.Set("regionCode", y.RegionCode)
+	q.Set("type", y.Type)
+	q.Set("key", y.ProductKey)
+
+	if y.PublishedAfter != "" {
+		q.Set("publishedAfter", y.PublishedAfter)
+	}
+	u.RawQuery = q.Encode()
+	y.ApiUrl = u.String()
 	return y
 }
 
@@ -149,6 +164,11 @@ func (y *YoutubeApi) SetPublishedAfter(publishedAfter string) *YoutubeApi {
 }
 
 func (y *YoutubeApi) SetSearchWord(searchWord string) *YoutubeApi {
-	y.Q = url.QueryEscape(searchWord)
+	y.Q = searchWord
+	return y
+}
+
+func (y *YoutubeApi) SetOrder(order string) *YoutubeApi {
+	y.Order = order
 	return y
 }
