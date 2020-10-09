@@ -1,76 +1,80 @@
 <html>
     <head>
-        <title>My music list.</title>
+        <title>NBA Rumors</title>
         <meta name="viewport" content="width=device-width,initial-scale=1">
         <style>
-        ol {
-            counter-reset:number;
-            list-style-type: none!important;
-            padding: 0.3em 0.8em;
-            border: solid 2px #ffb107;
-            box-shadow :0px 0px 5px silver;
+        .tabs {
+            margin-top: 50px;
+            padding-bottom: 40px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            margin: 0 auto;
         }
-        ol li {
-            border-bottom: dashed 1px orange;
-            position: relative;
-            padding: 0.5em 0.5em 0.5em 30px;
-            line-height: 1.5em;
-        }
-        ol li:before{
-            position: absolute;
-            counter-increment: number;
-            content: counter(number);
-            display:inline-block;
-            background: #ffb107;
-            color: white;
-            font-family: 'Avenir','Arial Black','Arial',sans-serif;
-            font-weight:bold;
-            font-size: 15px;
-            border-radius: 50%;
-            left: 0;
-            width: 25px;
-            height: 25px;
-            line-height: 25px;
-            text-align: center;
-            top: 50%;
-            -webkit-transform: translateY(-50%);
-            transform: translateY(-50%);
-        }
-        ol li:last-of-type {
-            border-bottom: none;
-        }
-        .contents {
-            width: 90%;
-            margin-left: auto;
-            margin-right: auto;
+        .tab_item {
+            width: calc(100%/{{ .SearchResultsCount }});
+            height: 50px;
+            background-color: #d9d9d9;
+            line-height: 50px;
             font-size: 16px;
-            color: dimgray;
+            text-align: center;
+            color: #565656;
+            display: block;
+            float: left;
+            text-align: center;
+            font-weight: bold;
+            transition: all 0.2s ease;
         }
-        .date-area {
-            text-align: right;
-            margin-top: 10%;
-            font-size: 13px;
+        .tab_item:hover {
+            opacity: 0.75;
         }
-        .music-area {
-            margin-left: 10px;
-            margin-right: 10px;
+        input[name="tab_item"] {
+            display: none;
+        }
+        .tab_content {
+            display: none;
+            padding: 40px 40px 0;
+            clear: both;
+            overflow: hidden;
+        }
+
+        {{ range $k, $result := .SearchResults }}
+        #{{ $result.Code }}:checked ~ #{{ $result.Code }}_content
+        {
+            display: block;
+        }
+        {{ end }}
+
+        .tabs input:checked + .tab_item {
+            background-color: #00008b;
+            color: #fff;
         }
         </style>
     </head>
 
     <body>
-        <div class="contents">
-            <p class="date-area">{{ .ModifyDate }}</p>
-            <ol>
-            {{ range $k, $item := .Article.Items }}
-                <li>
-                    <div class="music-area">
-                        <a href="https://www.youtube.com/watch?v={{ $item.ID.VideoID }}" title="{{ $item.Snippet.Title }}"><img src="{{ $item.Snippet.Thumbnails.Default.URL }}" alt="{{ $item.Snippet.Title }}"></a>
-                        <br>{{ $item.Snippet.Title }}
-                    </div>
-                </li>
+        <p class="date-area">{{ .ModifyDate }}</p>
+
+        <div class="tabs">
+            {{ range $k, $result := .SearchResults }}
+            <input id="{{ $result.Code }}" type="radio" name="tab_item" checked><label class="tab_item" for="{{ $result.Code }}">{{ $result.Word }}</label>
             {{ end }}
-            </ol>
+
+            {{ range $k, $result := .SearchResults }}
+            <div class="tab_content" id="{{ $result.Code }}_content">
+                <div class="tab_content_description">
+                    <p class="c-txtsp">
+                    {{ range $i, $item := $result.Article.Items }}
+                        <div>
+                            <a href="https://www.youtube.com/watch?v={{ $item.ID.VideoID }}" title="{{ $item.Snippet.Title }}"><img src="{{ $item.Snippet.Thumbnails.Default.URL }}" alt="{{ $item.Snippet.Title }}"></a>
+                            <br>{{ $item.Snippet.Title }}    
+                        </div>
+                    {{ end }}
+                    </p>
+                </div>
+            </div>
+            {{ end }}
         </div>
+
     </body>
 </html>

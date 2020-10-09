@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"./config"
+	"./search-condition"
 	"./template"
-	"./youtube"
 )
 
 func init() {
@@ -28,16 +28,27 @@ func main() {
 	publishedAfter := today.AddDate(0, 0, -7).UTC().Format(time.RFC3339)
 	modifyDate := today.Format("2006-01-02")
 
-	youtubeApi := youtube.NewYoutube()
-	article, err := youtubeApi.SetProductKey(productKey).SetMaxResults(50).
-		SetPublishedAfter(publishedAfter).Connect().GetArticle()
-	if err != nil {
-		log.Fatal(err)
+	searchConditions := search.NewSearchCondition()
+	searchResults := search.NewSearchResult()
+	for _, condition := range searchConditions {
+		article, err := condition.GetSearchContents(productKey, publishedAfter)
+		if err != nil {
+			log.Print(err)
+		}
+
+		searchResults = append(searchResults,
+			search.SearchResult{
+				Code:    condition.Code,
+				Word:    condition.Word,
+				Article: article,
+			})
 	}
 
 	templateValues := template.NewIndexTempalteValues()
-	templateValues.Article = article
 	templateValues.ModifyDate = modifyDate
+	templateValues.SearchResults = searchResults
+	templateValues.SearchResultsCount = len(searchResults)
+
 	filename, err := templateValues.MakeIndexTemplate()
 	if err != nil {
 		log.Fatal(err)

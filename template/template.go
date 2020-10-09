@@ -7,12 +7,13 @@ import (
 	"text/template"
 
 	"../config"
-	"../youtube"
+	"../search-condition"
 )
 
 type IndexTemplateValues struct {
-	Article    *youtube.YoutubeArticle
-	ModifyDate string
+	ModifyDate         string
+	SearchResults      []search.SearchResult
+	SearchResultsCount int
 }
 
 func NewIndexTempalteValues() *IndexTemplateValues {
