@@ -33,9 +33,12 @@
         }
         .tab_content {
             display: none;
-            padding: 40px 40px 0;
+            padding: 10px 10px 0;
             clear: both;
             overflow: hidden;
+        }
+        .article {
+            margin-bottom: 20px;
         }
 
         {{ range $k, $result := .SearchResults }}
@@ -65,7 +68,7 @@
                 <div class="tab_content_description">
                     <p class="c-txtsp">
                     {{ range $i, $item := $result.Article.Items }}
-                        <div>
+                        <div class="article">
                             <a href="https://www.youtube.com/watch?v={{ $item.ID.VideoID }}" title="{{ $item.Snippet.Title }}"><img src="{{ $item.Snippet.Thumbnails.Default.URL }}" alt="{{ $item.Snippet.Title }}"></a>
                             <br>{{ $item.Snippet.Title }}    
                         </div>
